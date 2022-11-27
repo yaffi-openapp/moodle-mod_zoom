@@ -410,3 +410,5 @@ $string['zoom:refreshsessions'] = 'Refresh Zoom meeting reports';
 $string['zoom:view'] = 'View Zoom meetings';
 $string['zoom:viewdialin'] = 'View Zoom dial-in information';
 $string['zoom:viewjoinurl'] = 'View Zoom join url';
+$string['desc'] = 'Email addresses of users who will always have a free Zoom account';
+$string['desc2'] = 'Saving Zoom accounts';

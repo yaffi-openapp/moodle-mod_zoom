@@ -422,8 +422,14 @@ class mod_zoom_webservice {
      */
     private function paid_user_limit_reached() {
         $userslist = $this->list_users();
+        $managers = get_config('zoom', 'manager_accounts');
+        $managers = str_replace(' ', '', $managers);
+        $managers = explode(",", $managers);
         $numusers = 0;
         foreach ($userslist as $user) {
+            if (in_array($user->email, $managers) && $user->type == ZOOM_USER_TYPE_BASIC) {
+                ++$numusers;
+            }
             if ($user->type != ZOOM_USER_TYPE_BASIC && ++$numusers >= $this->numlicenses) {
                 return true;
             }
@@ -439,8 +445,11 @@ class mod_zoom_webservice {
     private function get_least_recently_active_paid_user_id() {
         $usertimes = array();
         $userslist = $this->list_users();
+        $managers = get_config('zoom', 'manager_accounts');
+        $managers = str_replace(" ", '', $managers);
+        $managers = explode(",", $managers);
         foreach ($userslist as $user) {
-            if ($user->type != ZOOM_USER_TYPE_BASIC && isset($user->last_login_time)) {
+            if ($user->type != ZOOM_USER_TYPE_BASIC && isset($user->last_login_time) && !in_array($user->email,  $managers)) {
                 $usertimes[$user->id] = strtotime($user->last_login_time);
             }
         }
@@ -621,11 +630,11 @@ class mod_zoom_webservice {
             if ($recordingoption === ZOOM_AUTORECORDING_USERDEFAULT) {
                 if (isset($zoom->schedule_for)) {
                     $zoomuser = zoom_get_user($zoom->schedule_for);
+                    $zoomuserid = $zoomuser->id;
                 } else {
-                    $zoomapiidentifier = zoom_get_api_identifier($USER);
-                    $zoomuser = zoom_get_user($zoomapiidentifier);
+                    $zoomuserid = zoom_get_user_id();
                 }
-                $autorecording = zoom_get_user_settings($zoomuser->id)->recording->auto_recording;
+                $autorecording = zoom_get_user_settings($zoomuserid)->recording->auto_recording;
                 $data['settings']['auto_recording'] = $autorecording;
             } else {
                 $data['settings']['auto_recording'] = $recordingoption;

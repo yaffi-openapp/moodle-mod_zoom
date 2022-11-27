@@ -402,4 +402,10 @@ if ($ADMIN->fulltree) {
         $settings->hide_if('zoom/invitation_invite', 'zoom/invitationremoveinvite', 'eq', 0);
         $settings->hide_if('zoom/invitation_icallink', 'zoom/invitationremoveicallink', 'eq', 0);
     }
+
+    // Yaffi.
+    $settings->add(new admin_setting_configtext(
+        'zoom/manager_accounts',
+         get_string('desc2', 'mod_zoom'),
+         get_string('desc', 'mod_zoom'), '', PARAM_TEXT));
 }
